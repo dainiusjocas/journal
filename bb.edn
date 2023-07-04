@@ -1,0 +1,5 @@
+{:tasks
+ {build-clerk
+  {:doc     "Build static clerk site under ./public/build"
+   :depends []
+   :task (clojure "-X:nextjournal/clerk")}}}

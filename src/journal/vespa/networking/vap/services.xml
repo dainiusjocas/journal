@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<services version="1.0" xmlns:deploy="vespa" xmlns:preprocess="properties">
+
+    <admin version="2.0">
+        <configservers>
+            <configserver hostalias="configserver-0" />
+            <configserver hostalias="configserver-1" />
+            <configserver hostalias="configserver-2" />
+        </configservers>
+        <cluster-controllers>
+            <cluster-controller hostalias="configserver-0" jvm-options="-Xms32M -Xmx64M" />
+            <cluster-controller hostalias="configserver-1" jvm-options="-Xms32M -Xmx64M" />
+            <cluster-controller hostalias="configserver-2" jvm-options="-Xms32M -Xmx64M" />
+        </cluster-controllers>
+        <slobroks>
+            <slobrok hostalias="configserver-0" />
+            <slobrok hostalias="configserver-1" />
+            <slobrok hostalias="configserver-2" />
+        </slobroks>
+
+        <adminserver hostalias="services-1" />
+    </admin>
+
+    <container id="default" version="1.0">
+        <document-api/>
+        <search/>
+        <nodes>
+            <node hostalias="services-1"/>
+        </nodes>
+    </container>
+
+    <content id="music" version="1.0">
+        <redundancy>1</redundancy>
+        <documents>
+            <document type="music" mode="index"/>
+        </documents>
+        <nodes>
+            <node hostalias="services-1" distribution-key="0"/>
+        </nodes>
+    </content>
+
+</services>
