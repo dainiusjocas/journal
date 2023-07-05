@@ -2,6 +2,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 
 (ns vespa-ip-vs-hostname
+  {:nextjournal.clerk/toc true}
   (:require
     [nextjournal.clerk :as clerk]
     [nextjournal.clerk.viewer :as v])
