@@ -1,5 +1,15 @@
-{:tasks
- {build-clerk
+{:deps {org.babashka/http-server {:mvn/version "0.1.11"}
+        org.babashka/cli         {:mvn/version "0.2.23"}}
+ :tasks
+ {:requires ([babashka.cli :as cli])
+  :init (def cli-opts (cli/parse-opts *command-line-args* {:coerce {:port :int}}))
+  build-clerk
   {:doc     "Build static clerk site under ./public/build"
    :depends []
-   :task (clojure "-X:nextjournal/clerk")}}}
+   :task    (clojure "-X:nextjournal/clerk")}
+  serve
+  {:doc      "Serve static assets"
+   :requires ([babashka.http-server :as server])
+   :task     (server/exec (merge {:port 1337
+                                  :dir  "public/build/"}
+                            cli-opts))}}}
