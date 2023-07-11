@@ -13,7 +13,7 @@
 (defn deploy! [in-container]
   (tc/execute-command!
     in-container
-    ["sh" "-c" (format "(cd %s && vespa deploy -w 30)" vap-dir)]))
+    ["sh" "-c" (format "(cd %s && vespa deploy -w 120)" vap-dir)]))
 (defn build-vap-and-deploy! [in-container]
   [(package! in-container)
    (deploy! in-container)])
