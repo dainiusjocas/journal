@@ -38,9 +38,6 @@
               (tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/vap"
                                     :container-path vap-dir
                                     :mode           :read-write})
-              (tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/scripts"
-                                    :container-path scripts-dir
-                                    :mode           :read-write})
               (tc/start!))
       (build-vap-and-deploy!))))
 
