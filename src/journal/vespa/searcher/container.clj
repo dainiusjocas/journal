@@ -14,9 +14,9 @@
   (tc/execute-command!
     in-container
     ["sh" "-c" (format "(cd %s && vespa deploy -w 120)" vap-dir)]))
+
 (defn build-vap-and-deploy! [in-container]
-  [(println ">>>AFTER PACKAGE" (package! in-container))
-   (println ">>>AFTER DEPLOY" (deploy! in-container))])
+  [(package! in-container) (deploy! in-container)])
 
 (def vespa
   (delay
@@ -35,12 +35,9 @@
                                  :startup-timeout 300}
                  :log-to        {:log-strategy :fn
                                  :function     (fn [log-line] (print "VESPA>: " log-line))}})
-              ;(tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/vap"
-              ;                      :container-path vap-dir
-              ;                      :mode           :read-write})
-              (tc/map-classpath-resource! {:resource-path  "journal/vespa/searcher/vap"
-                                           :container-path vap-dir
-                                           :mode           :read-write})
+              (tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/vap"
+                                    :container-path vap-dir
+                                    :mode           :read-write})
               (tc/start!))
       (build-vap-and-deploy!))))
 
