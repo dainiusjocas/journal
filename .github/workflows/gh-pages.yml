@@ -56,6 +56,8 @@ jobs:
           bb: '1.3.181'
       - name: Build static pages
         run: |
+          mkdir src/journal/vespa/searcher/vap/target
+          chmod 777 src/journal/vespa/searcher/vap/target
           bb build-clerk
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
