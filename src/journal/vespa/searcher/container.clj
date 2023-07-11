@@ -35,9 +35,12 @@
                                  :startup-timeout 300}
                  :log-to        {:log-strategy :fn
                                  :function     (fn [log-line] (print "VESPA>: " log-line))}})
-              (tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/vap"
-                                    :container-path vap-dir
-                                    :mode           :read-write})
+              ;(tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/vap"
+              ;                      :container-path vap-dir
+              ;                      :mode           :read-write})
+              (tc/map-classpath-resource! {:resource-path  "journal/vespa/searcher/vap"
+                                           :container-path vap-dir
+                                           :mode           :read-write})
               (tc/start!))
       (build-vap-and-deploy!))))
 
