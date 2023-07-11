@@ -235,7 +235,7 @@ In the `body` we have one hit that has fields:
 - `URL_QUERY_STRING`;
 - multiple fields starting with `foo`: all values are serialized into strings;
 
-Also, in the response we can se our custom HTTP header.
+Also, in the response we can see our custom HTTP header.
 
 ## Conclusions
 
