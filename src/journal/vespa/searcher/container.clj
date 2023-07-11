@@ -42,7 +42,9 @@
                                     :container-path scripts-dir
                                     :mode           :read-write})
               (tc/start!))
-      (build-vap-and-deploy!))))
+      (println ">>>>Vespa container has started!")
+      (build-vap-and-deploy!)
+      (println ">>>>VAP was deployed!"))))
 
 (defn restart-services! []
   (tc/execute-command!
