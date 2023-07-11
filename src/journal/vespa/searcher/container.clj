@@ -15,10 +15,8 @@
     in-container
     ["sh" "-c" (format "(cd %s && vespa deploy -w 120)" vap-dir)]))
 (defn build-vap-and-deploy! [in-container]
-  [(package! in-container)
-   (println ">>>AFTER PACKAGE")
-   (deploy! in-container)
-   (println ">>>AFTER DEPLOY")])
+  [(println ">>>AFTER PACKAGE" (package! in-container))
+   (println ">>>AFTER DEPLOY" (deploy! in-container))])
 
 (def vespa
   (delay
@@ -44,9 +42,7 @@
                                     :container-path scripts-dir
                                     :mode           :read-write})
               (tc/start!))
-      (println ">>>>Vespa container has started!")
-      (build-vap-and-deploy!)
-      (println ">>>>VAP was deployed!"))))
+      (build-vap-and-deploy!))))
 
 (defn restart-services! []
   (tc/execute-command!
