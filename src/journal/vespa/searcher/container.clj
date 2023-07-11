@@ -16,7 +16,9 @@
     ["sh" "-c" (format "(cd %s && vespa deploy -w 120)" vap-dir)]))
 (defn build-vap-and-deploy! [in-container]
   [(package! in-container)
-   (deploy! in-container)])
+   (println ">>>AFTER PACKAGE")
+   (deploy! in-container)
+   (println ">>>AFTER DEPLOY")])
 
 (def vespa
   (delay
