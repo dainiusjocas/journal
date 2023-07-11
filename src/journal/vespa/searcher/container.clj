@@ -32,7 +32,7 @@
                                  :tls             false
                                  :read-timout     5
                                  :headers         {"Accept" "text/plain"}
-                                 :startup-timeout 60}
+                                 :startup-timeout 300}
                  :log-to        {:log-strategy :fn
                                  :function     (fn [log-line] (print "VESPA>: " log-line))}})
               (tc/bind-filesystem! {:host-path      "src/journal/vespa/searcher/vap"
