@@ -56,7 +56,7 @@ When deployed a chain of searchers is responsible for turning a
 into the [`Result`](https://github.com/vespa-engine/vespa/blob/master/container-search/src/main/java/com/yahoo/search/Result.java).
 
 The simplest possible, the noop searcher looks like this:
-```javascript
+```c++  
 public Result search(Query query, Execution execution) {
     return execution.search(query);
 }
@@ -86,7 +86,7 @@ Your JSONs are there.
 In case your request body is set of key-value pairs, then the data is parsed into
 [`Properties`](https://github.com/vespa-engine/vespa/blob/master/container-search/src/main/java/com/yahoo/search/query/Properties.java)[^properties].
 You can access properties like this:
-```javascript
+```c++
 query.properties().get("propertyKey")
 ```
 
@@ -136,7 +136,7 @@ HTTP headers are represented as a `Map<String, List<String>>`.
 
 In the searcher you can access headers like this:
 
-```javascript
+```c++
 query.getHttpRequest().getJDiscRequest().headers()
 ```
 
@@ -145,7 +145,7 @@ query.getHttpRequest().getJDiscRequest().headers()
 URL query string is parsed into a `Map<String, String>`.
 You can access them in your searcher like this:
 
-```javascript
+```c++
 query.getHttpRequest().propertyMap()
 ```
 
@@ -161,7 +161,7 @@ NOTE: URL query parameters have a **precedence** over parameters specified in th
             {}
             {"foo-priority-param" "from-body"}))
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
 (clerk/html [:pre (searcher/resp-to-curl response)])
 
@@ -179,7 +179,7 @@ NOTE: passing search parameters via query string (e.g. YQL with an entire embedd
 It is possible to set custom [HTTP response headers](https://developer.mozilla.org/en-US/docs/Glossary/Response_header).
 In your searcher:
 
-```text
+```c++
 result.getHeaders(true).put("X-Foo-Header", "foo-value");
 ```
 
@@ -194,6 +194,7 @@ NOTE: In order to enable custom HTTP response headers don't forget to set
                 (slurp "src/journal/vespa/searcher/vap/pom.xml"))
               "project > build > plugins > plugin > configuration > failOnWarnings"))])
 ```
+
 for the Vespa `bundle-plugin` in the `pom.xml`, [source](https://github.com/dainiusjocas/journal/tree/main/src/journal/vespa/searcher/vap/pom.xml).
 
 ## Experimentation
@@ -201,12 +202,13 @@ for the Vespa `bundle-plugin` in the `pom.xml`, [source](https://github.com/dain
 The `EchoSearcher` source code:
 
 ```clojure
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html
-  [:pre (str/join "\n" (->> (slurp "src/journal/vespa/searcher/vap/src/main/java/lt/jocas/vespa/searcher/EchoSearcher.java")
-                            (str/split-lines)
-                            (drop 9)))])
+(clerk/code
+  {::clerk/opts {:language "java"}}
+  (str/join "\n" (->> (slurp "src/journal/vespa/searcher/vap/src/main/java/lt/jocas/vespa/searcher/EchoSearcher.java")
+                      (str/split-lines)
+                      (drop 9))))
 ```
 
 The Searcher echoes the params from the request that starts with `foo`[^why-foo] and adds fields for URL query strings and HTTP headers.
