@@ -11,8 +11,8 @@
   :nextjournal/clerk
   {:exec-fn                   nextjournal.clerk/build!
    :exec-args                 {:bundle false
-                               :paths  ["index.clj"
-                                        "articles/*.md"]}
+                               :paths  ["articles/*.md"]
+                               :index "src/index.clj"}
    ;; TODO: add all notebooks you want to have built ☝️
    ;; if you just want to build one notebook, set `:index`
 

@@ -8,7 +8,7 @@
 h1 + p { font-size: 1.7em; position: relative; padding-bottom: 40px;}
 h1 + p:after { content: \"\"; position: absolute; left: 0; bottom: 0; border-bottom: 2px solid #ccc; width: 350px;"])
 
-;; # Welcome to my Journal of my engineering adventures
+;; # Welcome to the Journal of my engineering adventures
 ;; Follow along with what I'm working on, and the topics I'm passionate about.
 
 ^{::clerk/viewer clerk/html :nextjournal.clerk/visibility {:result :show}}
