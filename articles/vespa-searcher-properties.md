@@ -2,10 +2,9 @@
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 
 (ns vespa-searcher-properties
-  {:nextjournal.clerk/toc true}
+  {:nextjournal.clerk/toc :collapsed}
   (:require
     [clojure.string :as str]
-    [clojure.data.json :as json]
     [journal.utils.jsoup :as jsoup]
     [nextjournal.clerk :as clerk]
     [nextjournal.clerk.viewer :as v]
@@ -113,15 +112,17 @@ In the Query API [docs](https://docs.vespa.ai/en/reference/query-api-reference.h
 When doing the HTTP request with the JSON body you can send a value with the flat-dot notation:
 
 ```clojure
-(clerk/html 
-  [:pre (searcher/resp-to-curl (searcher/query-flat-dot))])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl (searcher/query-flat-dot)))
 ```
 
 Or you can send a nested JSON-structure.
 
 ```clojure
-(clerk/html
-  [:pre (searcher/resp-to-curl (searcher/query-nested-json))])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl (searcher/query-nested-json)))
 ```
 
 These two are the same from the Vespa point of view.
@@ -155,21 +156,23 @@ NOTE: URL query parameters have a **precedence** over parameters specified in th
 
 ```clojure
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}
-  :nextjournal.clerk/no-cache true}
+  :nextjournal.clerk/no-cache   true}
 (def response (searcher/http-call
-            {"foo-priority-param" "from-query-string"}
-            {}
-            {"foo-priority-param" "from-body"}))
+                {"foo-priority-param" "from-query-string"}
+                {}
+                {"foo-priority-param" "from-body"}))
 
-{:nextjournal.clerk/width :wide}
-^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/resp-to-curl response)])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl response))
 
 ;; To which Vespa responds:
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/http-resp-pprint response)])
+(clerk/code
+  {::clerk/opts {:language "json"}}
+  (searcher/http-resp-pprint response))
 ```
 
 NOTE: passing search parameters via query string (e.g. YQL with an entire embedding) has a significant performance penalty.
@@ -221,15 +224,19 @@ All-in-one request example:
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 (def resp (searcher/http-call))
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/resp-to-curl resp)])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl resp))
 
 ;; To which Vespa responds:
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/http-resp-pprint resp)])
+(clerk/code
+  {::clerk/opts {:language "json"}}
+  (searcher/http-resp-pprint resp))
 ```
 
 In the `body` we have one hit that has fields:
@@ -246,4 +253,4 @@ Searchers handle HTTP requests with any incoming data.
 Next we'll explore Searcher chains.
 
 [^http-best-practices]: Other best practices can be found [here](https://cloud.vespa.ai/en/http-best-practices)
-[^rich-hickey]: [Rich Hickey](https://en.wikipedia.org/wiki/Rich_Hickey) HTTP request rant [video](https://www.youtube.com/watch?v=aSEQfqNYNAc)
+[^rich-hickey]: [Rich Hickey's](https://en.wikipedia.org/wiki/Rich_Hickey) rant on HTTP request [video](https://www.youtube.com/watch?v=aSEQfqNYNAc)

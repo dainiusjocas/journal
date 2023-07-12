@@ -3,7 +3,8 @@
          io.github.nextjournal/clerk-slideshow   {:git/sha "977003e581d78f4f554bb8ae73f877f4070925c3"}
          org.slf4j/slf4j-nop                     {:mvn/version "1.7.36"}
          clj-test-containers/clj-test-containers {:mvn/version "0.7.4"}
-         org.jsoup/jsoup                         {:mvn/version "1.16.1"}}
+         org.jsoup/jsoup                         {:mvn/version "1.16.1"}
+         com.cnuernber/charred                   {:mvn/version "1.028"}}
  :aliases
  {:dev
   {:extra-paths ["dev"]}

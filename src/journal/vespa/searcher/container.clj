@@ -3,8 +3,6 @@
 
 (def vap-dir "/opt/vespa/testcontainers")
 
-(def scripts-dir "/opt/vespa/scripts")
-
 (defn package! [in-container]
   (tc/execute-command!
     in-container
