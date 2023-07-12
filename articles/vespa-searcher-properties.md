@@ -2,8 +2,8 @@
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 
 (ns vespa-searcher-properties
-  {:nextjournal.clerk/toc :collapsed
-   :nextjournal.clerk/open-graph {:image "https://docs.vespa.ai/assets/logos/vespa-logo-full-black.svg"
+  {:nextjournal.clerk/toc        :collapsed
+   :nextjournal.clerk/open-graph {:image       "https://docs.vespa.ai/assets/logos/vespa-logo-full-black.svg"
                                   :description "Notes on how Vespa Searcher handles HTTP request data."}}
   (:require
     [clojure.string :as str]
