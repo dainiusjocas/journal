@@ -1,5 +1,5 @@
 (ns journal.vespa.searcher.core
-  (:require [clojure.data.json :as json]
+  (:require [journal.utils.json :as json]
             [clojure.string :as str]
             [clojure.test :refer [is]]
             [clj-test-containers.core :as tc]
@@ -48,18 +48,16 @@
                        headers)
        :body         (json/json-str body)})))
 
-(defn pprint-json [obj] (with-out-str (json/pprint obj)))
-
 (defn http-resp-pprint [resp]
   (-> resp
       (update :body json/read-str)
       (dissoc :opts)
-      pprint-json))
+      json/pprint))
 
 (defn resp-to-curl [resp]
   (let [opts (:opts resp)
         hdrs (fn [headers]
-               (str/join " "
+               (str/join " \\\n  "
                          (mapv (fn [[k v]]
                                  (str "-H \"" k ": " v "\"")) headers)))
         qp (fn [query-params]
@@ -69,7 +67,7 @@
     (format
       "curl -s -X POST %s --data '\n%s' \\\nhttp://localhost:8080/search/%s"
       (hdrs (:headers opts))
-      (str/trim (pprint-json (json/read-str (:body opts))))
+      (str/trim (json/pprint (json/read-str (:body opts))))
       (or (qp (:query-params opts)) ""))))
 
 (defn query-flat-dot []

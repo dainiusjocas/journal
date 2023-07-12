@@ -2,10 +2,11 @@
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 
 (ns vespa-searcher-properties
-  {:nextjournal.clerk/toc true}
+  {:nextjournal.clerk/toc        :collapsed
+   :nextjournal.clerk/open-graph {:image       "https://docs.vespa.ai/assets/logos/vespa-logo-full-black.svg"
+                                  :description "Notes on how Vespa Searcher handles HTTP request data."}}
   (:require
     [clojure.string :as str]
-    [clojure.data.json :as json]
     [journal.utils.jsoup :as jsoup]
     [nextjournal.clerk :as clerk]
     [nextjournal.clerk.viewer :as v]
@@ -56,7 +57,7 @@ When deployed a chain of searchers is responsible for turning a
 into the [`Result`](https://github.com/vespa-engine/vespa/blob/master/container-search/src/main/java/com/yahoo/search/Result.java).
 
 The simplest possible, the noop searcher looks like this:
-```javascript
+```c++  
 public Result search(Query query, Execution execution) {
     return execution.search(query);
 }
@@ -86,7 +87,7 @@ Your JSONs are there.
 In case your request body is set of key-value pairs, then the data is parsed into
 [`Properties`](https://github.com/vespa-engine/vespa/blob/master/container-search/src/main/java/com/yahoo/search/query/Properties.java)[^properties].
 You can access properties like this:
-```javascript
+```c++
 query.properties().get("propertyKey")
 ```
 
@@ -113,15 +114,17 @@ In the Query API [docs](https://docs.vespa.ai/en/reference/query-api-reference.h
 When doing the HTTP request with the JSON body you can send a value with the flat-dot notation:
 
 ```clojure
-(clerk/html 
-  [:pre (searcher/resp-to-curl (searcher/query-flat-dot))])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl (searcher/query-flat-dot)))
 ```
 
 Or you can send a nested JSON-structure.
 
 ```clojure
-(clerk/html
-  [:pre (searcher/resp-to-curl (searcher/query-nested-json))])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl (searcher/query-nested-json)))
 ```
 
 These two are the same from the Vespa point of view.
@@ -136,7 +139,7 @@ HTTP headers are represented as a `Map<String, List<String>>`.
 
 In the searcher you can access headers like this:
 
-```javascript
+```c++
 query.getHttpRequest().getJDiscRequest().headers()
 ```
 
@@ -145,7 +148,7 @@ query.getHttpRequest().getJDiscRequest().headers()
 URL query string is parsed into a `Map<String, String>`.
 You can access them in your searcher like this:
 
-```javascript
+```c++
 query.getHttpRequest().propertyMap()
 ```
 
@@ -155,21 +158,23 @@ NOTE: URL query parameters have a **precedence** over parameters specified in th
 
 ```clojure
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}
-  :nextjournal.clerk/no-cache true}
+  :nextjournal.clerk/no-cache   true}
 (def response (searcher/http-call
-            {"foo-priority-param" "from-query-string"}
-            {}
-            {"foo-priority-param" "from-body"}))
+                {"foo-priority-param" "from-query-string"}
+                {}
+                {"foo-priority-param" "from-body"}))
 
-{:nextjournal.clerk/width :full}
-^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/resp-to-curl response)])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl response))
 
 ;; To which Vespa responds:
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/http-resp-pprint response)])
+(clerk/code
+  {::clerk/opts {:language "json"}}
+  (searcher/http-resp-pprint response))
 ```
 
 NOTE: passing search parameters via query string (e.g. YQL with an entire embedding) has a significant performance penalty.
@@ -179,7 +184,7 @@ NOTE: passing search parameters via query string (e.g. YQL with an entire embedd
 It is possible to set custom [HTTP response headers](https://developer.mozilla.org/en-US/docs/Glossary/Response_header).
 In your searcher:
 
-```text
+```c++
 result.getHeaders(true).put("X-Foo-Header", "foo-value");
 ```
 
@@ -194,6 +199,7 @@ NOTE: In order to enable custom HTTP response headers don't forget to set
                 (slurp "src/journal/vespa/searcher/vap/pom.xml"))
               "project > build > plugins > plugin > configuration > failOnWarnings"))])
 ```
+
 for the Vespa `bundle-plugin` in the `pom.xml`, [source](https://github.com/dainiusjocas/journal/tree/main/src/journal/vespa/searcher/vap/pom.xml).
 
 ## Experimentation
@@ -201,12 +207,13 @@ for the Vespa `bundle-plugin` in the `pom.xml`, [source](https://github.com/dain
 The `EchoSearcher` source code:
 
 ```clojure
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html
-  [:pre (str/join "\n" (->> (slurp "src/journal/vespa/searcher/vap/src/main/java/lt/jocas/vespa/searcher/EchoSearcher.java")
-                            (str/split-lines)
-                            (drop 9)))])
+(clerk/code
+  {::clerk/opts {:language "java"}}
+  (str/join "\n" (->> (slurp "src/journal/vespa/searcher/vap/src/main/java/lt/jocas/vespa/searcher/EchoSearcher.java")
+                      (str/split-lines)
+                      (drop 9))))
 ```
 
 The Searcher echoes the params from the request that starts with `foo`[^why-foo] and adds fields for URL query strings and HTTP headers.
@@ -219,15 +226,19 @@ All-in-one request example:
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 (def resp (searcher/http-call))
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/resp-to-curl resp)])
+(clerk/code
+  {::clerk/opts {:language "sh"}}
+  (searcher/resp-to-curl resp))
 
 ;; To which Vespa responds:
 
-{:nextjournal.clerk/width :full}
+{:nextjournal.clerk/width :wide}
 ^:nextjournal.clerk/no-cache
-(clerk/html [:pre (searcher/http-resp-pprint resp)])
+(clerk/code
+  {::clerk/opts {:language "json"}}
+  (searcher/http-resp-pprint resp))
 ```
 
 In the `body` we have one hit that has fields:
@@ -244,4 +255,4 @@ Searchers handle HTTP requests with any incoming data.
 Next we'll explore Searcher chains.
 
 [^http-best-practices]: Other best practices can be found [here](https://cloud.vespa.ai/en/http-best-practices)
-[^rich-hickey]: [Rich Hickey](https://en.wikipedia.org/wiki/Rich_Hickey) HTTP request rant [video](https://www.youtube.com/watch?v=aSEQfqNYNAc)
+[^rich-hickey]: [Rich Hickey's](https://en.wikipedia.org/wiki/Rich_Hickey) rant on HTTP request [video](https://www.youtube.com/watch?v=aSEQfqNYNAc)
