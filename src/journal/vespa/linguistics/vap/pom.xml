@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>lt.jocas</groupId>
+  <artifactId>vespa-lucene-linguistics</artifactId>
+  <version>1.0.0</version>
+  <packaging>container-plugin</packaging>
+
+  <name>lucene-linguistics</name>
+  <url>https://github.com/dainiusjocas/vespa-lucene-linguistics</url>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <source-jdk.version>17</source-jdk.version>
+    <target-jdk.version>17</target-jdk.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+    <vespa_version>8.179.37</vespa_version>
+    <guice.version>3.0</guice.version>
+
+    <kuromoji-ipadic.version>0.9.0</kuromoji-ipadic.version>
+    <junit.version>5.7.1</junit.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>9.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analysis-common</artifactId>
+      <version>9.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yahoo.vespa</groupId>
+      <artifactId>component</artifactId>
+      <version>${vespa_version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yahoo.vespa</groupId>
+      <artifactId>config-lib</artifactId>
+      <version>${vespa_version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yahoo.vespa</groupId>
+      <artifactId>configdefinitions</artifactId>
+      <version>${vespa_version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yahoo.vespa</groupId>
+      <artifactId>linguistics</artifactId>
+      <version>${vespa_version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>${guice.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${source-jdk.version}</source>
+          <target>${target-jdk.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- for generating MANIFEST for OSGi -->
+        <groupId>com.yahoo.vespa</groupId>
+        <artifactId>bundle-plugin</artifactId>
+        <version>${vespa_version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <bundleSymbolicName>${project.artifactId}</bundleSymbolicName>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- for generating Config classes -->
+        <groupId>com.yahoo.vespa</groupId>
+        <artifactId>config-class-plugin</artifactId>
+        <version>${vespa_version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>config-gen</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

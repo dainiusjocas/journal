@@ -1,0 +1,12 @@
+package=lt.jocas.vespa.linguistics
+
+# The schema ("type") for an application specified config type
+# See
+#  - https://docs.vespa.ai/en/reference/config-files.html
+
+analysis{}.tokenizer.name           string
+analysis{}.tokenizer.conf{}         string
+analysis{}.charFilters[].name       string
+analysis{}.charFilters[].conf{}     string
+analysis{}.tokenFilters[].name      string
+analysis{}.tokenFilters[].conf{}    string
