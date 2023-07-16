@@ -24,10 +24,10 @@
     <target-jdk.version>17</target-jdk.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 
-    <vespa_version>8.179.37</vespa_version>
+    <vespa.version>8.179.37</vespa.version>
+    <lucene.version>9.7.0</lucene.version>
     <guice.version>3.0</guice.version>
 
-    <kuromoji-ipadic.version>0.9.0</kuromoji-ipadic.version>
     <junit.version>5.7.1</junit.version>
   </properties>
 
@@ -35,35 +35,43 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>9.7.0</version>
+      <version>${lucene.version}</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analysis-common</artifactId>
-      <version>9.7.0</version>
+      <version>${lucene.version}</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>component</artifactId>
-      <version>${vespa_version}</version>
+      <version>${vespa.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yahoo.vespa</groupId>
+      <artifactId>annotations</artifactId>
+      <version>${vespa.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>config-lib</artifactId>
-      <version>${vespa_version}</version>
+      <version>${vespa.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>configdefinitions</artifactId>
-      <version>${vespa_version}</version>
+      <version>${vespa.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>linguistics</artifactId>
-      <version>${vespa_version}</version>
+      <version>${vespa.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -97,7 +105,7 @@
         <!-- for generating MANIFEST for OSGi -->
         <groupId>com.yahoo.vespa</groupId>
         <artifactId>bundle-plugin</artifactId>
-        <version>${vespa_version}</version>
+        <version>${vespa.version}</version>
         <extensions>true</extensions>
         <configuration>
           <bundleSymbolicName>${project.artifactId}</bundleSymbolicName>
@@ -107,7 +115,7 @@
         <!-- for generating Config classes -->
         <groupId>com.yahoo.vespa</groupId>
         <artifactId>config-class-plugin</artifactId>
-        <version>${vespa_version}</version>
+        <version>${vespa.version}</version>
         <executions>
           <execution>
             <goals>

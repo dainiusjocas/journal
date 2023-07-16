@@ -4,8 +4,9 @@ package=lt.jocas.vespa.linguistics
 # See
 #  - https://docs.vespa.ai/en/reference/config-files.html
 
-analysis{}.tokenizer.name           string
+analysis{}.tokenizer.name           string  default=standard
 analysis{}.tokenizer.conf{}         string
+
 analysis{}.charFilters[].name       string
 analysis{}.charFilters[].conf{}     string
 analysis{}.tokenFilters[].name      string
