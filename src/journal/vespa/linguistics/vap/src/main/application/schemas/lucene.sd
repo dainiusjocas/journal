@@ -1,0 +1,13 @@
+schema lucene {
+    document lucene {
+        field language type string {
+            indexing: "en" | set_language
+        }
+        field mytext type string {
+            indexing: summary | index
+        }
+    }
+    fieldset default {
+        fields: mytext
+    }
+}

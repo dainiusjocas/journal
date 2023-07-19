@@ -58,6 +58,10 @@ jobs:
         run: |
           mkdir src/journal/vespa/searcher/vap/target
           chmod 777 src/journal/vespa/searcher/vap/target
+          mkdir src/journal/vespa/linguistics/vap/target
+          chmod 777 src/journal/vespa/linguistics/vap/target
+          mkdir src/journal/vespa/linguistics/lucene/target
+          chmod 777 src/journal/vespa/linguistics/lucene/target
           bb build-clerk
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
