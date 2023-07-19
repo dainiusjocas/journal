@@ -1,21 +1,25 @@
 package lt.jocas.vespa.linguistics;
 
 import com.yahoo.language.Language;
-import com.yahoo.language.process.StemMode;
-import com.yahoo.language.process.Token;
-import com.yahoo.language.process.Tokenizer;
+import com.yahoo.language.process.*;
 import com.yahoo.language.simple.SimpleToken;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LuceneTokenizer implements Tokenizer {
 
-    private final static String FIELD_NAME = "field";
+    private static final Logger log = Logger.getLogger(LuceneTokenizer.class.getName());
+
+    // Dummy value, just to stuff the Lucene interface.
+    private final static String FIELD_NAME = "F";
 
     private final AnalyzerFactory analyzerFactory;
 
@@ -35,18 +39,23 @@ public class LuceneTokenizer implements Tokenizer {
         TokenStream tokenStream = analyzer.tokenStream(FIELD_NAME, input);
 
         CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
+        OffsetAttribute offsetAttribute = tokenStream.addAttribute(OffsetAttribute.class);
         try {
             tokenStream.reset();
-            while(tokenStream.incrementToken()) {
+            while (tokenStream.incrementToken()) {
                 // TODO: add other attributes, length, position, etc.
                 // TODO: what to do with cases when multiple tokens are inserted into the position?
-                tokens.add(new SimpleToken(charTermAttribute.toString(), charTermAttribute.toString()));
+                tokens.add(new SimpleToken(charTermAttribute.toString(), charTermAttribute.toString())
+                        .setType(TokenType.ALPHABETIC)
+                        .setOffset(offsetAttribute.startOffset())
+                        .setScript(TokenScript.UNKNOWN));
             }
             tokenStream.end();
             tokenStream.close();
         } catch (IOException e) {
             throw new RuntimeException("Failed to analyze: " + input, e);
         }
+        log.log(Level.SEVERE, "Tokenized text='" + input + "' into: n=" + tokens.size() + ", tokens=" + tokens);
         return tokens;
     }
 }

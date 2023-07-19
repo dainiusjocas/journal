@@ -3,14 +3,18 @@ package lt.jocas.vespa.linguistics;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.StemMode;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharFilterFactory;
+import org.apache.lucene.analysis.TokenFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class AnalyzerFactory {
+    private static final Logger log = Logger.getLogger(AnalyzerFactory.class.getName());
 
     // Here list of current analyzers per language
     // the idea is not to create analyzers until they are needed
@@ -24,6 +28,9 @@ public class AnalyzerFactory {
     private final static String STANDARD_TOKENIZER = "standard";
 
     public AnalyzerFactory(LuceneAnalysisConfig config) {
+        log.info("Available char filters: " + CharFilterFactory.availableCharFilters());
+        log.info("Available tokenizers: " + TokenFilterFactory.availableTokenFilters());
+        log.info("Available tokenizers: " + TokenFilterFactory.availableTokenFilters());
         this.config = config;
     }
 

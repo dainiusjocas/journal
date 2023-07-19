@@ -20,7 +20,6 @@ public class LuceneTokenizerTest {
         var tokenizer = new LuceneTokenizer(new LuceneAnalysisConfig.Builder().build());
         Iterable<Token> tokens = tokenizer
                 .tokenize(text, Language.ENGLISH, StemMode.ALL, true);
-        tokens.iterator().forEachRemaining(t -> System.out.println(t.getOrig()));
         Iterator<Token> tokenIterator = tokens.iterator();
         assertToken("this", tokenIterator);
         assertToken("is", tokenIterator);
