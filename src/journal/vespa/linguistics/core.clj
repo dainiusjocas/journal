@@ -1,7 +1,14 @@
-(ns journal.vespa.linguistics.core)
+(ns journal.vespa.linguistics.core
+  (:require [clj-test-containers.core :as tc]
+            [journal.vespa.linguistics.container :as container]))
 
 
 (comment
+  (in-ns 'journal.vespa.linguistics.core)
+  @container/vespa
+
+  (tc/stop! @container/vespa)
+
   (-> (http-call {"language"          "fr"}
                  {}
                  {"model.queryString" "dogs cats rainbows"
@@ -13,3 +20,5 @@
 ;    /opt/vespa/bin/vespa-index-inspect dumpwords \
 ;    --indexdir /opt/vespa/var/db/vespa/search/cluster.music/n0/documents/music/0.ready/index/index.fusion.3 \
 ;    --field album'
+
+; TODO: linguistics reverses term multiple times during query
