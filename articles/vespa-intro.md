@@ -62,7 +62,7 @@
 
 ```clojure
 ^{:nextjournal.clerk/visibility {:code :hide :result :show}}
-(clerk/image "articles/vespa-intro/logo.png")
+(clerk/image "https://github.com/dainiusjocas/journal/blob/main/articles/vespa-intro/logo.png?raw=true")
 ```
 
 - `Big Data + AI, online.`
@@ -93,7 +93,7 @@
 
 ```clojure
 ^{:nextjournal.clerk/visibility {:code :hide :result :show}}
-(clerk/image "articles/vespa-intro/vespa-overview.png")
+(clerk/image "https://github.com/dainiusjocas/journal/blob/main/articles/vespa-intro/vespa-overview.png?raw=true")
 ```
 
 --- 
@@ -214,7 +214,7 @@ select * from doc where true limit 0 | all( group( fixedwidth(term_count,100) ) 
 ```clojure
 ^{:nextjournal.clerk/visibility {:code :hide :result :show}
   :nextjournal.clerk/width :full}
-(clerk/image "articles/vespa-intro/phased-ranking.png")
+(clerk/image "https://github.com/dainiusjocas/journal/blob/main/articles/vespa-intro/phased-ranking.png?raw=true")
 ```
 
 ---
