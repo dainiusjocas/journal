@@ -14,8 +14,19 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.hide>true</test.hide>
     <vespa.version>8.194.16</vespa.version>
+    <lucene.version>9.7.0</lucene.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analysis-stempel</artifactId>
+      <version>9.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>lt.jocas</groupId>
+      <artifactId>vespa-lucene-linguistics</artifactId>
+      <version>1.0.0</version>
+    </dependency>
     <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>application</artifactId>
