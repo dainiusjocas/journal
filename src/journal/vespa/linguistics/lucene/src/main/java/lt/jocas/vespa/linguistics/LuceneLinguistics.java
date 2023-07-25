@@ -9,6 +9,8 @@ import com.yahoo.language.simple.SimpleLinguistics;
 import com.yahoo.language.simple.SimpleNormalizer;
 import com.yahoo.language.simple.SimpleTransformer;
 
+import java.util.ArrayList;
+
 /**
  * Factory of Lucene based linguistics processor.
  *
@@ -26,6 +28,14 @@ public class LuceneLinguistics extends SimpleLinguistics {
     private final GramSplitter gramSplitter;
     private final Tokenizer tokenizer;
 
+    private final Stemmer stemmer = (s, stemMode, language) -> {
+        ArrayList<StemList> stemLists = new ArrayList<>();
+        StemList word = new StemList();
+        word.add(s);
+        stemLists.add(word);
+        return stemLists;
+    };
+
     @Inject
     public LuceneLinguistics(LuceneAnalysisConfig config) {
         this.normalizer = new SimpleNormalizer();
@@ -39,7 +49,7 @@ public class LuceneLinguistics extends SimpleLinguistics {
 
     @Override
     public Stemmer getStemmer() {
-        return new StemmerImpl(tokenizer);
+        return stemmer;
     }
 
     @Override

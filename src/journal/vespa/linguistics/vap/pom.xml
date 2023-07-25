@@ -17,6 +17,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>lt.jocas</groupId>
+      <artifactId>vespa-lucene-linguistics</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>application</artifactId>
       <version>${vespa.version}</version>

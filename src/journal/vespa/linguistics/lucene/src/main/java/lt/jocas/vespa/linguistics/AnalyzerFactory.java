@@ -9,6 +9,7 @@ import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,6 +22,8 @@ public class AnalyzerFactory {
     // Analyzers are thread safe so no need to recreate them for every document
     private final LuceneAnalysisConfig config;
 
+    private final Path configDir;
+
     private final Map<String, Analyzer> languageAnalyzers = new HashMap<>();
 
     private final Analyzer defaultAnalyzer = new StandardAnalyzer();
@@ -28,10 +31,11 @@ public class AnalyzerFactory {
     private final static String STANDARD_TOKENIZER = "standard";
 
     public AnalyzerFactory(LuceneAnalysisConfig config) {
+        this.config = config;
+        this.configDir = config.configDir();
         log.info("Available char filters: " + CharFilterFactory.availableCharFilters());
         log.info("Available tokenizers: " + TokenFilterFactory.availableTokenFilters());
         log.info("Available tokenizers: " + TokenFilterFactory.availableTokenFilters());
-        this.config = config;
     }
 
     public Analyzer getAnalyzer(Language language, StemMode stemMode, boolean removeAccents) {
@@ -62,11 +66,11 @@ public class AnalyzerFactory {
     private Analyzer setUpAnalyzer(String analyzerKey) {
         try {
             LuceneAnalysisConfig.Analysis analysis = config.analysis(analyzerKey);
-            CustomAnalyzer.Builder builder = CustomAnalyzer.builder();
+            CustomAnalyzer.Builder builder = CustomAnalyzer.builder(configDir);
             builder = withTokenizer(builder, analysis);
             builder = addCharFilters(builder, analysis);
             builder = addTokenFilters(builder, analysis);
-            return  builder.build();
+            return builder.build();
         } catch (IOException e) {
             // TODO: what to Use as an analyzer in case resources are missing?
             // Definitely log WARNING

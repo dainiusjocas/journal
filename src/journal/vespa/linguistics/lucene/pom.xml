@@ -5,7 +5,6 @@
   <groupId>lt.jocas</groupId>
   <artifactId>vespa-lucene-linguistics</artifactId>
   <version>1.0.0</version>
-  <packaging>container-plugin</packaging>
 
   <name>lucene-linguistics</name>
   <url>https://github.com/dainiusjocas/vespa-lucene-linguistics</url>
@@ -105,16 +104,6 @@
         <configuration>
           <source>${source-jdk.version}</source>
           <target>${target-jdk.version}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <!-- for generating MANIFEST for OSGi -->
-        <groupId>com.yahoo.vespa</groupId>
-        <artifactId>bundle-plugin</artifactId>
-        <version>${vespa.version}</version>
-        <extensions>true</extensions>
-        <configuration>
-          <bundleSymbolicName>${project.artifactId}</bundleSymbolicName>
         </configuration>
       </plugin>
       <plugin>
