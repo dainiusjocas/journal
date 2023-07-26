@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 
 /**
  * Factory of Lucene based linguistics processor.
+ * As described in the {@Linguistics} docstring
+ * > the tokenizer should typically stem, transform and normalize
+ * The Stemmer, Transformer, Normalizer, and Segmenter implementations are mostly NOOP.
  *
  * TODO: docs for all available analysis components.
  * TODO: some registry for available language Analyzers.
