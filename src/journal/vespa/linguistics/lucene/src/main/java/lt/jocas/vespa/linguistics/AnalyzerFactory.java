@@ -5,6 +5,7 @@ import com.yahoo.language.process.StemMode;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharFilterFactory;
 import org.apache.lucene.analysis.TokenFilterFactory;
+import org.apache.lucene.analysis.TokenizerFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
@@ -17,13 +18,14 @@ import java.util.logging.Logger;
 public class AnalyzerFactory {
     private static final Logger log = Logger.getLogger(AnalyzerFactory.class.getName());
 
-    // Here list of current analyzers per language
-    // the idea is not to create analyzers until they are needed
-    // Analyzers are thread safe so no need to recreate them for every document
     private final LuceneAnalysisConfig config;
 
+    // Root config directory for all analysis components
     private final Path configDir;
 
+    // Registry of analyzers per language
+    // The idea is to create analyzers ONLY WHEN they are needed
+    // Analyzers are thread safe so no need to recreate them for every document
     private final Map<String, Analyzer> languageAnalyzers = new HashMap<>();
 
     private final Analyzer defaultAnalyzer = new StandardAnalyzer();
@@ -33,11 +35,20 @@ public class AnalyzerFactory {
     public AnalyzerFactory(LuceneAnalysisConfig config) {
         this.config = config;
         this.configDir = config.configDir();
-        log.info("Available char filters: " + CharFilterFactory.availableCharFilters());
-        log.info("Available tokenizers: " + TokenFilterFactory.availableTokenFilters());
-        log.info("Available tokenizers: " + TokenFilterFactory.availableTokenFilters());
+        log.info("Available in classpath char filters: " + CharFilterFactory.availableCharFilters());
+        log.info("Available in classpath tokenizers: " + TokenizerFactory.availableTokenizers());
+        log.info("Available in classpath token filters: " + TokenFilterFactory.availableTokenFilters());
     }
 
+    /**
+     * Retrieves an analyzer with a given params.
+     * Sets up the analyzer if config is provided.
+     * Default analyzer is the `StandardAnalyzer`.
+     * @param language
+     * @param stemMode
+     * @param removeAccents
+     * @return
+     */
     public Analyzer getAnalyzer(Language language, StemMode stemMode, boolean removeAccents) {
         String analyzerKey = generateKey(language, stemMode, removeAccents);
         // if analyzer is configured, but instance is not created yet
@@ -46,14 +57,14 @@ public class AnalyzerFactory {
             languageAnalyzers.put(analyzerKey, analyzer);
             return analyzer;
         } else {
-            // Analyzer is already set up or it is not configured
+            // Analyzer is already set up or it is not configured at all
             return languageAnalyzers.getOrDefault(analyzerKey, defaultAnalyzer);
         }
     }
 
-    // Should we combine language + stemMode + removeAccents to make more variations possible?
+    // TODO: Does it mak sense to combine language + stemMode + removeAccents to make
+    //  a composite key so we can have more variations possible?
     private String generateKey(Language language, StemMode stemMode, boolean removeAccents) {
-        // default stem mode
         return language.languageCode();
     }
 
@@ -71,11 +82,16 @@ public class AnalyzerFactory {
             builder = addCharFilters(builder, analysis);
             builder = addTokenFilters(builder, analysis);
             return builder.build();
-        } catch (IOException e) {
-            // TODO: what to Use as an analyzer in case resources are missing?
-            // Definitely log WARNING
-            // Since the resources should be in VAP, unit tests must catch the problem and prevent
-            // VAP being deployed
+        } catch (Exception e) {
+            // Failing to set up the Analyzer, should blow up during testing and VAP should not be deployed.
+            // Most likely cause for problems is that a specified resource is not available in VAP.
+            // Unit tests should catch such problems and prevent the VAP being deployed.
+            log.severe("Failed to build analyzer: '"
+                    + analyzerKey
+                    + "', with configuration: '"
+                    + config.analysis(analyzerKey)
+                    + "' with exception: '"
+                    + e.getMessage() + "'" );
             throw new RuntimeException(e);
         }
     }
@@ -94,7 +110,7 @@ public class AnalyzerFactory {
     private CustomAnalyzer.Builder addCharFilters(CustomAnalyzer.Builder builder,
                                                   LuceneAnalysisConfig.Analysis analysis) throws IOException {
         if (null == analysis) {
-            // by default there are no token filters
+            // by default there are no char filters
             return builder;
         }
         for (LuceneAnalysisConfig.Analysis.CharFilters charFilter : analysis.charFilters()) {
@@ -110,12 +126,18 @@ public class AnalyzerFactory {
             return builder;
         }
         for (LuceneAnalysisConfig.Analysis.TokenFilters tokenFilter : analysis.tokenFilters()) {
-//            tokenFilter.conf().isEmpty() ? new HashMap<>() : new
             builder.addTokenFilter(tokenFilter.name(), toModifiable(tokenFilter.conf()));
         }
         return builder;
     }
 
+    /**
+     * A config map coming from the Vespa ConfigInstance is immutable while CustomAnalyzer builders
+     * mutates the map to mark that a param was consumed. Immutable maps can't be mutated!
+     * To overcome this conflict we can wrap the ConfigInstance map in a new HashMap.
+     * @param map
+     * @return Mutable Map
+     */
     private Map<String, String> toModifiable(Map<String, String> map) {
         return new HashMap<>(map);
     }
