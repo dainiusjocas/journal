@@ -11,13 +11,14 @@
             </tokenizer>
             <tokenFilters>
               <item>
-                <name>lowercase</name>
-              </item>
-              <item>
                 <name>stop</name>
                 <conf>
                   <item key="words">en/stopwords.txt</item>
+                  <item key="ignoreCase">true</item>
                 </conf>
+              </item>
+              <item>
+                <name>englishMinimalStem</name>
               </item>
             </tokenFilters>
           </item>
@@ -31,7 +32,7 @@
   <content id="content" version="1.0">
     <redundancy>1</redundancy>
     <documents>
-      <document type="lucene" mode="index" />
+      <document type="lucene" mode="index"/>
       <document-processing cluster="container"/>
     </documents>
   </content>

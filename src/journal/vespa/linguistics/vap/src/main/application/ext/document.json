@@ -2,6 +2,6 @@
   "put": "id:mynamespace:lucene::mydocid",
   "fields": {
     "language": "lt",
-    "mytext": "Something Zero One Two Three Four Five Six Seven Eight"
+    "mytext": "sOMETHINGs Zero One Two Three Four Five Six Seven Eight"
   }
 }
