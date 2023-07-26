@@ -1,10 +1,12 @@
 package lt.jocas.vespa.linguistics;
 
+import com.yahoo.config.FileReference;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.StemMode;
 import com.yahoo.language.process.Token;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +19,10 @@ public class LuceneTokenizerTest {
     @Test
     public void testTokenizer() {
         String text = "This is my Text";
-        var tokenizer = new LuceneTokenizer(new LuceneAnalysisConfig.Builder().build());
+        var tokenizer = new LuceneTokenizer(new LuceneAnalysisConfig
+                .Builder()
+                .configDir(FileReference.mockFileReferenceForUnitTesting(new File(".")))
+                .build());
         Iterable<Token> tokens = tokenizer
                 .tokenize(text, Language.ENGLISH, StemMode.ALL, true);
         Iterator<Token> tokenIterator = tokens.iterator();
@@ -49,23 +54,25 @@ public class LuceneTokenizerTest {
     @Test
     public void testAnalyzerConfiguration() {
         String languageCode = Language.ENGLISH.languageCode();
-        LuceneAnalysisConfig enConfig = new LuceneAnalysisConfig.Builder().analysis(
-                Map.of(languageCode,
-                        new LuceneAnalysisConfig
-                                .Analysis
-                                .Builder()
-                                .tokenFilters(List.of(
-                                        new LuceneAnalysisConfig
-                                                .Analysis
-                                                .TokenFilters
-                                                .Builder()
-                                                .name("englishMinimalStem"),
-                                        new LuceneAnalysisConfig
-                                                .Analysis
-                                                .TokenFilters
-                                                .Builder()
-                                                .name("uppercase"))))
-        ).build();
+        LuceneAnalysisConfig enConfig = new LuceneAnalysisConfig.Builder()
+                .configDir(FileReference.mockFileReferenceForUnitTesting(new File(".")))
+                .analysis(
+                        Map.of(languageCode,
+                                new LuceneAnalysisConfig
+                                        .Analysis
+                                        .Builder()
+                                        .tokenFilters(List.of(
+                                                new LuceneAnalysisConfig
+                                                        .Analysis
+                                                        .TokenFilters
+                                                        .Builder()
+                                                        .name("englishMinimalStem"),
+                                                new LuceneAnalysisConfig
+                                                        .Analysis
+                                                        .TokenFilters
+                                                        .Builder()
+                                                        .name("uppercase"))))
+                ).build();
         LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
@@ -76,15 +83,17 @@ public class LuceneTokenizerTest {
     @Test
     public void testEnglishStemmerAnalyzerConfiguration() {
         String languageCode = Language.ENGLISH.languageCode();
-        LuceneAnalysisConfig enConfig = new LuceneAnalysisConfig.Builder().analysis(
-                Map.of(languageCode,
-                        new LuceneAnalysisConfig.Analysis.Builder().tokenFilters(List.of(
-                                new LuceneAnalysisConfig
-                                        .Analysis
-                                        .TokenFilters
-                                        .Builder()
-                                        .name("englishMinimalStem"))))
-        ).build();
+        LuceneAnalysisConfig enConfig = new LuceneAnalysisConfig.Builder()
+                .configDir(FileReference.mockFileReferenceForUnitTesting(new File(".")))
+                .analysis(
+                        Map.of(languageCode,
+                                new LuceneAnalysisConfig.Analysis.Builder().tokenFilters(List.of(
+                                        new LuceneAnalysisConfig
+                                                .Analysis
+                                                .TokenFilters
+                                                .Builder()
+                                                .name("englishMinimalStem"))))
+                ).build();
         LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
@@ -95,21 +104,23 @@ public class LuceneTokenizerTest {
     @Test
     public void testStemmerWithStopWords() {
         String languageCode = Language.ENGLISH.languageCode();
-        LuceneAnalysisConfig enConfig = new LuceneAnalysisConfig.Builder().analysis(
-                Map.of(languageCode,
-                        new LuceneAnalysisConfig.Analysis.Builder().tokenFilters(List.of(
-                                new LuceneAnalysisConfig
-                                        .Analysis
-                                        .TokenFilters
-                                        .Builder()
-                                        .name("englishMinimalStem"),
-                                new LuceneAnalysisConfig
-                                        .Analysis
-                                        .TokenFilters
-                                        .Builder()
-                                        .name("stop")
-                                        .conf("words", "stopwords.txt"))))
-        ).build();
+        LuceneAnalysisConfig enConfig = new LuceneAnalysisConfig.Builder()
+                .configDir(FileReference.mockFileReferenceForUnitTesting(new File(".")))
+                .analysis(
+                        Map.of(languageCode,
+                                new LuceneAnalysisConfig.Analysis.Builder().tokenFilters(List.of(
+                                        new LuceneAnalysisConfig
+                                                .Analysis
+                                                .TokenFilters
+                                                .Builder()
+                                                .name("englishMinimalStem"),
+                                        new LuceneAnalysisConfig
+                                                .Analysis
+                                                .TokenFilters
+                                                .Builder()
+                                                .name("stop")
+                                                .conf("words", "stopwords.txt"))))
+                ).build();
         LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
         Iterable<Token> tokens = linguistics
                 .getTokenizer()

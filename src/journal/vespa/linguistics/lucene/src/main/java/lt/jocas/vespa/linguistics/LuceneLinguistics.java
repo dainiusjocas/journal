@@ -2,50 +2,62 @@ package lt.jocas.vespa.linguistics;
 
 import com.google.inject.Inject;
 import com.yahoo.language.Linguistics;
-import com.yahoo.language.detect.Detector;
 import com.yahoo.language.process.*;
-import com.yahoo.language.simple.SimpleDetector;
 import com.yahoo.language.simple.SimpleLinguistics;
-import com.yahoo.language.simple.SimpleNormalizer;
-import com.yahoo.language.simple.SimpleTransformer;
+
+import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Factory of Lucene based linguistics processor.
+ * As described in the {@Linguistics} docstring
+ * > the tokenizer should typically stem, transform and normalize
+ * The Stemmer, Transformer, Normalizer, and Segmenter implementations are mostly NOOP.
  *
  * TODO: docs for all available analysis components.
- * TODO: deploy vap and print all components in constructor or somewhere.
- * TODO: should I provide default settings for languages?
+ * TODO: some registry for available language Analyzers.
  */
 public class LuceneLinguistics extends SimpleLinguistics {
 
-    // Threadsafe instances
+    private static final Logger log = Logger.getLogger(LuceneLinguistics.class.getName());
     private final Normalizer normalizer;
     private final Transformer transformer;
-    private final Detector detector;
-    private final CharacterClasses characterClasses;
-    private final GramSplitter gramSplitter;
     private final Tokenizer tokenizer;
+    private final Stemmer stemmer;
+    private final Segmenter segmenter;
+    private final LuceneAnalysisConfig config;
 
     @Inject
     public LuceneLinguistics(LuceneAnalysisConfig config) {
-        this.normalizer = new SimpleNormalizer();
-        this.transformer = new SimpleTransformer();
-        this.detector = new SimpleDetector();
-        this.characterClasses = new CharacterClasses();
-        this.gramSplitter = new GramSplitter(characterClasses);
+        log.info("Creating LuceneLinguistics with: " + config);
+        this.config = config;
         this.tokenizer = new LuceneTokenizer(config);
+        // NOOP stemmer
+        this.stemmer = (word, stemMode, language) -> {
+            ArrayList<StemList> stemLists = new ArrayList<>();
+            StemList stems = new StemList();
+            stems.add(word);
+            stemLists.add(stems);
+            return stemLists;
+        };
+        // Segmenter that just wraps a tokenizer
+        this.segmenter = (string, language) -> {
+            ArrayList<String> segments = new ArrayList<>();
+            Iterable<Token> tokens = tokenizer.tokenize(string, language, StemMode.NONE, false);
+            tokens.forEach(token -> segments.add(token.getTokenString()));
+            return segments;
+        };
+        // NOOP normalizer
+        this.normalizer = (string) -> string;
+        // NOOP transformer
+        this.transformer = (string, language) -> string;
     }
-
 
     @Override
-    public Stemmer getStemmer() {
-        return new StemmerImpl(tokenizer);
-    }
+    public Stemmer getStemmer() { return stemmer; }
 
     @Override
-    public Tokenizer getTokenizer() {
-        return tokenizer;
-    }
+    public Tokenizer getTokenizer() { return tokenizer; }
 
     @Override
     public Normalizer getNormalizer() { return normalizer; }
@@ -54,19 +66,15 @@ public class LuceneLinguistics extends SimpleLinguistics {
     public Transformer getTransformer() { return transformer; }
 
     @Override
-    public Segmenter getSegmenter() { return new SegmenterImpl(getTokenizer()); }
+    public Segmenter getSegmenter() { return segmenter; }
 
-    @Override
-    public Detector getDetector() { return detector; }
-
-    @Override
-    public GramSplitter getGramSplitter() { return gramSplitter; }
-
-    @Override
-    public CharacterClasses getCharacterClasses() { return characterClasses; }
+    public LuceneAnalysisConfig getConfig() {
+        return config;
+    }
 
     @Override
     public boolean equals(Linguistics other) {
-        // Check also equality of the LuceneAnalysisConfig
-        return (other instanceof LuceneLinguistics); }
+        return (other instanceof LuceneLinguistics)
+                // Config actually determines if Linguistics are equal
+                && config.equals(((LuceneLinguistics) other).getConfig()); }
 }

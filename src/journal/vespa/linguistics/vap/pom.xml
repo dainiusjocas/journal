@@ -14,8 +14,26 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.hide>true</test.hide>
     <vespa.version>8.194.16</vespa.version>
+    <lucene.version>9.7.0</lucene.version>
+    <junit.version>5.7.1</junit.version>
   </properties>
+
   <dependencies>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analysis-stempel</artifactId>
+      <version>9.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.hlavki.text</groupId>
+      <artifactId>jlemmagen</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>lt.jocas</groupId>
+      <artifactId>vespa-lucene-linguistics</artifactId>
+      <version>1.0.0</version>
+    </dependency>
     <dependency>
       <groupId>com.yahoo.vespa</groupId>
       <artifactId>application</artifactId>
@@ -27,6 +45,12 @@
       <artifactId>container</artifactId>
       <version>${vespa.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -52,6 +76,14 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>9</source>
+          <target>9</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>

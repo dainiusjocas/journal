@@ -24,24 +24,54 @@ docker run --rm --detach \
 vespa status deploy --wait 300
 
 # Package the Lucene Linguistics implementation
-(cd ../lucene && mvn clean package)
+(cd ../lucene && mvn clean install)
 
 mvn clean package
 vespa deploy -w 100
 
 vespa feed src/main/application/ext/document.json
-vespa query "select * from lucene where true"
+vespa query 'yql=select * from lucene where default contains "something"'
+# observe the lowercased and stemmed query string when compared with the text from document.
 ```
 
-In the logs you should be able to find something like this:
-```text
-[2023-07-19 14:03:57.751] ERROR   container        Container.lt.jocas.vespa.linguistics.LuceneTokenizer	Tokenized text='Vespa Lucene Linguistics sample document' into: n=5, tokens=[token 'apseV', token 'enecuL', token 'scitsiugniL', token 'elpmas', token 'tnemucod']
+The query should return:
+```json
+{
+    "root": {
+        "id": "toplevel",
+        "relevance": 1.0,
+        "fields": {
+            "totalCount": 1
+        },
+        "coverage": {
+            "coverage": 100,
+            "documents": 2,
+            "full": true,
+            "nodes": 1,
+            "results": 1,
+            "resultsFull": 1
+        },
+        "children": [
+            {
+                "id": "id:mynamespace:lucene::mydocid",
+                "relevance": 0.37754900648443235,
+                "source": "content",
+                "fields": {
+                    "sddocname": "lucene",
+                    "documentid": "id:mynamespace:lucene::mydocid",
+                    "mytext": "sOMETHINGs Zero One Two Three Four Five Six Seven Eight"
+                }
+            }
+        ]
+    }
+}
 ```
 
 Voila!
 
-## Search doesn't not work as expected!
+## Search behaviour is a bit unexpected!
 
-The configured analyzer for English language tokenizes and reverses strings.
-The `reverseString` token filter creates problems for searching because for some reason it reverses the query terms two time.
-This is only issue for this demo, change the analyzer to something more reasonable and searching will work.
+If the configured analyzer for e.g. reverses or lowercases strings, then what is actually written into posting lists are not
+the reversed strings!
+While in search the string after the tokenizer are used. 
+This creates asymmetry in text processing.

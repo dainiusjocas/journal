@@ -1,6 +1,7 @@
 {
   "put": "id:mynamespace:lucene::mydocid",
   "fields": {
-    "mytext": "Vespa Lucene Linguistics sample document"
+    "language": "lt",
+    "mytext": "sOMETHINGs Zero One Two Three Four Five Six Seven Eight"
   }
 }

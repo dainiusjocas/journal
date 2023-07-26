@@ -31,21 +31,24 @@ public class LuceneTokenizer implements Tokenizer {
     public Iterable<Token> tokenize(String input, Language language, StemMode stemMode, boolean removeAccents) {
         if (input.isEmpty()) return List.of();
 
-        return textToTokens(input, analyzerFactory.getAnalyzer(language, stemMode, removeAccents));
+        List<Token> tokens = textToTokens(input, analyzerFactory.getAnalyzer(language, stemMode, removeAccents));
+        log.log(Level.FINEST, "Tokenized '" + language + "' text='" + input + "' into: n=" + tokens.size() + ", tokens=" + tokens);
+        return tokens;
     }
 
-    private Iterable<Token> textToTokens(String input, Analyzer analyzer) {
+    private List<Token> textToTokens(String text, Analyzer analyzer) {
         List<Token> tokens = new ArrayList<>();
-        TokenStream tokenStream = analyzer.tokenStream(FIELD_NAME, input);
+        TokenStream tokenStream = analyzer.tokenStream(FIELD_NAME, text);
 
         CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
         OffsetAttribute offsetAttribute = tokenStream.addAttribute(OffsetAttribute.class);
         try {
             tokenStream.reset();
             while (tokenStream.incrementToken()) {
-                // TODO: add other attributes, length, position, etc.
+                // TODO: is SimpleToken good enough? Maybe a custom implmentation.
                 // TODO: what to do with cases when multiple tokens are inserted into the position?
-                tokens.add(new SimpleToken(charTermAttribute.toString(), charTermAttribute.toString())
+                String tokenString = charTermAttribute.toString();
+                tokens.add(new SimpleToken(tokenString, tokenString)
                         .setType(TokenType.ALPHABETIC)
                         .setOffset(offsetAttribute.startOffset())
                         .setScript(TokenScript.UNKNOWN));
@@ -53,9 +56,8 @@ public class LuceneTokenizer implements Tokenizer {
             tokenStream.end();
             tokenStream.close();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to analyze: " + input, e);
+            throw new RuntimeException("Failed to analyze: " + text, e);
         }
-        log.log(Level.SEVERE, "Tokenized text='" + input + "' into: n=" + tokens.size() + ", tokens=" + tokens);
         return tokens;
     }
 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <services version="1.0">
   <container id="container" version="1.0">
-    <component id="lt.jocas.vespa.linguistics.LuceneLinguistics" bundle="vespa-lucene-linguistics">
+    <component id="lt.jocas.vespa.linguistics.LuceneLinguistics" bundle="vespa-lucene-linguistics-poc">
       <config name="lt.jocas.vespa.linguistics.lucene-analysis">
+        <configDir>lucene</configDir>
         <analysis>
           <item key="en">
             <tokenizer>
@@ -10,7 +11,14 @@
             </tokenizer>
             <tokenFilters>
               <item>
-                <name>reverseString</name>
+                <name>stop</name>
+                <conf>
+                  <item key="words">en/stopwords.txt</item>
+                  <item key="ignoreCase">true</item>
+                </conf>
+              </item>
+              <item>
+                <name>englishMinimalStem</name>
               </item>
             </tokenFilters>
           </item>
@@ -24,7 +32,7 @@
   <content id="content" version="1.0">
     <redundancy>1</redundancy>
     <documents>
-      <document type="lucene" mode="index" />
+      <document type="lucene" mode="index"/>
       <document-processing cluster="container"/>
     </documents>
   </content>
