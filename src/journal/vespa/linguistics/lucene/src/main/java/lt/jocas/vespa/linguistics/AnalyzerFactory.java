@@ -77,6 +77,7 @@ public class AnalyzerFactory {
     private Analyzer setUpAnalyzer(String analyzerKey) {
         try {
             LuceneAnalysisConfig.Analysis analysis = config.analysis(analyzerKey);
+            log.info("Creating analyzer for: '" + analyzerKey + "' with config: " + analysis);
             CustomAnalyzer.Builder builder = CustomAnalyzer.builder(configDir);
             builder = withTokenizer(builder, analysis);
             builder = addCharFilters(builder, analysis);
