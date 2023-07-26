@@ -39,9 +39,11 @@
                   "foo_array_of_scalars" [1 2 3]
                   "foo_array_of_objects" [{"bar" "baz"} {"aaa" "bbb"}]}))
   ([query-params headers body]
+   (http-call query-params headers body (vap-container-port)))
+  ([query-params headers body port]
    @(http/request
       {:method       :post
-       :url          (format "http://localhost:%s/search/" (vap-container-port))
+       :url          (format "http://localhost:%s/search/" port)
        :query-params query-params
        :headers      (if (empty? headers)
                        {"Content-Type" "application/json"}
