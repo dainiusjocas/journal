@@ -5,28 +5,19 @@
 
 (def linguistics-dir "/opt/vespa/linguistics")
 
-; TODO: index the data from ext dir
-
-; TODO: list index files
-; ls  /opt/vespa/var/db/vespa/search/cluster.content/n0/documents/lucene/0.ready/index/
-
-; TODO: show tokens in index
-; docker exec vespa bash -c '/opt/vespa/bin/vespa-proton-cmd --local triggerFlush && \
-;    /opt/vespa/bin/vespa-index-inspect dumpwords \
-;    --indexdir  /opt/vespa/var/db/vespa/search/cluster.content/n0/documents/lucene/0.ready/index/index.flush.1/ \
-;    --field mytext'
-
-;TODO: delete documents
-
 (defn package! [in-container]
-  (tc/execute-command!
-    in-container
-    ["sh" "-c" (format "(cd %s && mvn -DskipTests -U package)" vap-dir)]))
+  [(tc/execute-command!
+     in-container
+     ["sh" "-c" (format "(cd %s && mvn clean -DskipTests package)" linguistics-dir)])
+   (tc/execute-command!
+     in-container
+     ["sh" "-c" (format "(cd %s && mvn clean -DskipTests package)" vap-dir)])])
 
 (defn deploy! [in-container]
   (tc/execute-command!
     in-container
     ["sh" "-c" (format "(cd %s && vespa deploy -w 120)" vap-dir)]))
+
 (defn build-vap-and-deploy! [in-container]
   [(package! in-container)
    (deploy! in-container)])
@@ -57,7 +48,7 @@
               (tc/start!))
       (build-vap-and-deploy!))))
 
-(defn restart-services! []
+(defn restart-services! [in-container]
   (tc/execute-command!
-    @vespa
+    in-container
     ["sh" "-c" "/opt/vespa/bin/vespa-stop-services && /opt/vespa/bin/vespa-start-services"]))
