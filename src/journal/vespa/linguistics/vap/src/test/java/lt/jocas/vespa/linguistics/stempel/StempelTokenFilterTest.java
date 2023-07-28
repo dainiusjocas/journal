@@ -1,5 +1,6 @@
 package lt.jocas.vespa.linguistics.stempel;
 
+import com.yahoo.component.provider.ComponentRegistry;
 import com.yahoo.config.FileReference;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.StemMode;
@@ -32,7 +33,7 @@ public class StempelTokenFilterTest {
                                                 .Builder()
                                                 .name("stempelPolishStem"))))
                 ).build();
-        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
+        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig, new ComponentRegistry<>());
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
                 .tokenize("jeden i dwa", language, StemMode.ALL, false);
