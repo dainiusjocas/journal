@@ -1,26 +1,14 @@
 schema lucene {
     document lucene {
         field language type string {
-            indexing: "en" | set_language
+            indexing: set_language
         }
         field mytext type string {
-            indexing: summary
-        }
-    }
-
-    field mytext_index type string {
-        indexing {
-            input mytext | lowercase | index;
+            indexing: summary | index
         }
     }
 
     fieldset default {
-        fields: mytext_index
-    }
-
-    rank-profile myrankprofile inherits default {
-        first-phase {
-            expression: nativeRank(mytext_index)
-        }
+        fields: mytext
     }
 }

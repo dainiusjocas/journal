@@ -8,7 +8,7 @@
 (defn package! [in-container]
   [(tc/execute-command!
      in-container
-     ["sh" "-c" (format "(cd %s && mvn clean -DskipTests package)" linguistics-dir)])
+     ["sh" "-c" (format "(cd %s && mvn clean -DskipTests install)" linguistics-dir)])
    (tc/execute-command!
      in-container
      ["sh" "-c" (format "(cd %s && mvn clean -DskipTests package)" vap-dir)])])

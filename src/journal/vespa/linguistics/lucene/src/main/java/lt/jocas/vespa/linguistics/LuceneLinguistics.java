@@ -1,9 +1,11 @@
 package lt.jocas.vespa.linguistics;
 
 import com.google.inject.Inject;
+import com.yahoo.component.provider.ComponentRegistry;
 import com.yahoo.language.Linguistics;
 import com.yahoo.language.process.*;
 import com.yahoo.language.simple.SimpleLinguistics;
+import org.apache.lucene.analysis.Analyzer;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -28,10 +30,10 @@ public class LuceneLinguistics extends SimpleLinguistics {
     private final LuceneAnalysisConfig config;
 
     @Inject
-    public LuceneLinguistics(LuceneAnalysisConfig config) {
+    public LuceneLinguistics(LuceneAnalysisConfig config, ComponentRegistry<Analyzer> analyzers) {
         log.info("Creating LuceneLinguistics with: " + config);
         this.config = config;
-        this.tokenizer = new LuceneTokenizer(config);
+        this.tokenizer = new LuceneTokenizer(config, analyzers);
         // NOOP stemmer
         this.stemmer = (word, stemMode, language) -> {
             ArrayList<StemList> stemLists = new ArrayList<>();

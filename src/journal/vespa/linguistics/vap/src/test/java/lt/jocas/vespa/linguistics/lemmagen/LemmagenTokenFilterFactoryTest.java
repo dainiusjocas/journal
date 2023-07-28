@@ -1,5 +1,6 @@
 package lt.jocas.vespa.linguistics.lemmagen;
 
+import com.yahoo.component.provider.ComponentRegistry;
 import com.yahoo.config.FileReference;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.StemMode;
@@ -33,7 +34,7 @@ public class LemmagenTokenFilterFactoryTest {
                                                 .name("lemmagen")
                                                 .conf("lexicon", "sk.lem"))))
                 ).build();
-        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
+        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig, new ComponentRegistry<>());
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
                 .tokenize("Mačky a psy", language, StemMode.ALL, false);

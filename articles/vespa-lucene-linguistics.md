@@ -73,9 +73,11 @@ Analyzer construction logic is encoded in the [`AnalyzerFactory`](https://github
 
 A tricky bit was to configure Vespa to load data from resource files.
 Luckily, there is a `Builder` constructor that accepts `Path` parameter.
+
 ```c++
- public static Builder builder(Path configDir)
- ```
+public static Builder builder(Path configDir)
+```
+
 And `Path` is the type exposed by the Vespa [configuration definition language](https://docs.vespa.ai/en/reference/config-files.html)!
 Once deployed `Path` in the configuration points to where the files are stored in the Vespa `services` nodes, e.g. `/opt/vespa/var/db/vespa/filedistribution/dd3c228bd80aaf34/lucene`.
 This allows to set relative paths in the Lucene config, e.g. stopwords dictionary files.
@@ -96,8 +98,9 @@ private List<Token> textToTokens(String text, Analyzer analyzer) {
     try {
         tokenStream.reset();
         while (tokenStream.incrementToken()) {
+            String originalString = text.substring(offsetAttribute.startOffset(), offsetAttribute.endOffset());
             String tokenString = charTermAttribute.toString();
-            tokens.add(new SimpleToken(tokenString, tokenString)
+            tokens.add(new SimpleToken(originalString, tokenString)
                     .setType(TokenType.ALPHABETIC)
                     .setOffset(offsetAttribute.startOffset())
                     .setScript(TokenScript.UNKNOWN));
@@ -110,8 +113,6 @@ private List<Token> textToTokens(String text, Analyzer analyzer) {
     return tokens;
 }
 ```
-
-I'm not entirely sure if I've got the conversion into `Token` right, but it at this stage it works.
 
 Tokenizer decides how to process the input string according to three parameters:
 ```c++
