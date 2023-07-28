@@ -49,10 +49,11 @@ public class LuceneTokenizer implements Tokenizer {
         try {
             tokenStream.reset();
             while (tokenStream.incrementToken()) {
-                // TODO: is SimpleToken good enough? Maybe a custom implmentation.
+                // TODO: is SimpleToken good enough? Maybe a custom implementation.
                 // TODO: what to do with cases when multiple tokens are inserted into the position?
+                String originalString = text.substring(offsetAttribute.startOffset(), offsetAttribute.endOffset());
                 String tokenString = charTermAttribute.toString();
-                tokens.add(new SimpleToken(tokenString, tokenString)
+                tokens.add(new SimpleToken(originalString, tokenString)
                         .setType(TokenType.ALPHABETIC)
                         .setOffset(offsetAttribute.startOffset())
                         .setScript(TokenScript.UNKNOWN));

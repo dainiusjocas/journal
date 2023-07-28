@@ -70,7 +70,7 @@ public class AnalyzerFactory {
             return setAndReturn(analyzerKey, analyzerComponents.getComponent(analyzerKey));
         }
         if (null != defaultAnalyzers.get(language)) {
-            log.info("Analyzer for language=" + analyzerKey + "is from a list of default language analyzers.");
+            log.info("Analyzer for language=" + analyzerKey + " is from a list of default language analyzers.");
             return setAndReturn(analyzerKey, defaultAnalyzers.get(language));
         }
         // set the default analyzer for the language
