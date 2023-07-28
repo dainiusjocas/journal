@@ -1,5 +1,6 @@
 package lt.jocas.vespa.linguistics;
 
+import com.yahoo.component.provider.ComponentRegistry;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.StemMode;
 import org.apache.lucene.analysis.Analyzer;
@@ -32,9 +33,14 @@ public class AnalyzerFactory {
 
     private final static String STANDARD_TOKENIZER = "standard";
 
-    public AnalyzerFactory(LuceneAnalysisConfig config) {
+    private final ComponentRegistry<Analyzer> analyzerComponents;
+    private final DefaultAnalyzers defaultAnalyzers;
+
+    public AnalyzerFactory(LuceneAnalysisConfig config, ComponentRegistry<Analyzer> analyzers) {
         this.config = config;
         this.configDir = config.configDir();
+        this.analyzerComponents = analyzers;
+        this.defaultAnalyzers = DefaultAnalyzers.getInstance();
         log.info("Available in classpath char filters: " + CharFilterFactory.availableCharFilters());
         log.info("Available in classpath tokenizers: " + TokenizerFactory.availableTokenizers());
         log.info("Available in classpath token filters: " + TokenFilterFactory.availableTokenFilters());
@@ -51,15 +57,30 @@ public class AnalyzerFactory {
      */
     public Analyzer getAnalyzer(Language language, StemMode stemMode, boolean removeAccents) {
         String analyzerKey = generateKey(language, stemMode, removeAccents);
-        // if analyzer is configured, but instance is not created yet
-        if (isConfiguredAndNotCreated(analyzerKey)) {
-            Analyzer analyzer = setUpAnalyzer(analyzerKey);
-            languageAnalyzers.put(analyzerKey, analyzer);
-            return analyzer;
-        } else {
-            // Analyzer is already set up or it is not configured at all
-            return languageAnalyzers.getOrDefault(analyzerKey, defaultAnalyzer);
+
+        // If analyzer for language is already known
+        if (null != languageAnalyzers.get(analyzerKey)) {
+            return languageAnalyzers.get(analyzerKey);
         }
+        if (null != config.analysis(analyzerKey)) {
+            return setAndReturn(analyzerKey, setUpAnalyzer(analyzerKey));
+        }
+        if (null != analyzerComponents.getComponent(analyzerKey)) {
+            log.info("Analyzer for language=" + analyzerKey + " is from components.");
+            return setAndReturn(analyzerKey, analyzerComponents.getComponent(analyzerKey));
+        }
+        if (null != defaultAnalyzers.get(language)) {
+            log.info("Analyzer for language=" + analyzerKey + "is from a list of default language analyzers.");
+            return setAndReturn(analyzerKey, defaultAnalyzers.get(language));
+        }
+        // set the default analyzer for the language
+        log.info("StandardAnalyzer is used for language=" + analyzerKey);
+        return setAndReturn(analyzerKey, defaultAnalyzer);
+    }
+
+    private Analyzer setAndReturn(String analyzerKey, Analyzer analyzer) {
+        languageAnalyzers.put(analyzerKey, analyzer);
+        return analyzer;
     }
 
     // TODO: Does it mak sense to combine language + stemMode + removeAccents to make

@@ -1,5 +1,6 @@
 package lt.jocas.vespa.linguistics;
 
+import com.yahoo.component.provider.ComponentRegistry;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.*;
 import com.yahoo.language.simple.SimpleToken;
@@ -24,7 +25,10 @@ public class LuceneTokenizer implements Tokenizer {
     private final AnalyzerFactory analyzerFactory;
 
     public LuceneTokenizer(LuceneAnalysisConfig config) {
-        this.analyzerFactory = new AnalyzerFactory(config);
+        this(config, new ComponentRegistry<>());
+    }
+    public LuceneTokenizer(LuceneAnalysisConfig config, ComponentRegistry<Analyzer> analyzers) {
+        this.analyzerFactory = new AnalyzerFactory(config, analyzers);
     }
 
     @Override

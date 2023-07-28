@@ -1,5 +1,6 @@
 package lt.jocas.vespa.linguistics;
 
+import com.yahoo.component.provider.ComponentRegistry;
 import com.yahoo.config.FileReference;
 import com.yahoo.language.Language;
 import com.yahoo.language.process.StemMode;
@@ -25,11 +26,19 @@ public class LuceneTokenizerTest {
                 .build());
         Iterable<Token> tokens = tokenizer
                 .tokenize(text, Language.ENGLISH, StemMode.ALL, true);
-        Iterator<Token> tokenIterator = tokens.iterator();
-        assertToken("this", tokenIterator);
-        assertToken("is", tokenIterator);
-        assertToken("my", tokenIterator);
-        assertToken("text", tokenIterator);
+        assertEquals(List.of("my", "text"), tokenStrings(tokens));
+    }
+
+    @Test
+    public void testLithuanianTokenizer() {
+        String text = "Žalgirio mūšio data yra 1410 metai";
+        var tokenizer = new LuceneTokenizer(new LuceneAnalysisConfig
+                .Builder()
+                .configDir(FileReference.mockFileReferenceForUnitTesting(new File(".")))
+                .build());
+        Iterable<Token> tokens = tokenizer
+                .tokenize(text, Language.LITHUANIAN, StemMode.ALL, true);
+        assertEquals(List.of("žalgir", "mūš", "dat", "1410", "met"), tokenStrings(tokens));
     }
 
     private void assertToken(String tokenString, Iterator<Token> tokens) {
@@ -73,7 +82,7 @@ public class LuceneTokenizerTest {
                                                         .Builder()
                                                         .name("uppercase"))))
                 ).build();
-        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
+        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig, new ComponentRegistry<>());
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
                 .tokenize("Dogs and cats", Language.ENGLISH, StemMode.ALL, false);
@@ -94,7 +103,7 @@ public class LuceneTokenizerTest {
                                                 .Builder()
                                                 .name("englishMinimalStem"))))
                 ).build();
-        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
+        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig, new ComponentRegistry<>());
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
                 .tokenize("Dogs and Cats", Language.ENGLISH, StemMode.ALL, false);
@@ -121,7 +130,7 @@ public class LuceneTokenizerTest {
                                                 .name("stop")
                                                 .conf("words", "stopwords.txt"))))
                 ).build();
-        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig);
+        LuceneLinguistics linguistics = new LuceneLinguistics(enConfig, new ComponentRegistry<>());
         Iterable<Token> tokens = linguistics
                 .getTokenizer()
                 .tokenize("Dogs and Cats", Language.ENGLISH, StemMode.ALL, false);
