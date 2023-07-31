@@ -63,14 +63,24 @@
     (feed-document! @container/vespa)
     (flush-to-disk!)
     (println "TOKEN LIST:\n" (list-tokens))
-    (println "POSTINGS:\n" (show-postings))))
+    (println "POSTINGS:\n" (show-postings))
+    (-> (searcher/http-call
+          {}
+          {}
+          {"query"          "somethings one two dainius"
+           "grammar"        "any"
+           "model.language" "en"
+           "yql"            "select * from content where ({grammar: \"all\"}userInput(@query)) timeout 100"
+           "traceLevel"     "2"}
+          (vap-container-port))
+        :body
+        (json/read-str))))
 
 (defn vap-container-port [] (get (:mapped-ports @container/vespa) 8080))
 
 (comment
   (in-ns 'journal.vespa.linguistics.core)
   @container/vespa
-  (tc/start! @container/vespa)
 
   (container/build-vap-and-deploy! @container/vespa)
 
@@ -109,18 +119,6 @@
          "grammar"        "any"
          "model.language" "en"
          "yql"            "select * from sources * where userInput(@query) timeout 100"
-         "traceLevel"     "2"}
-        (vap-container-port))
-      :body
-      (json/read-str))
-
-  (-> (searcher/http-call
-        {}
-        {}
-        {"query"          "somethings"
-         "grammar"        "any"
-         "model.language" "en"
-         "yql"            "select * from sources * where true timeout 100"
          "traceLevel"     "2"}
         (vap-container-port))
       :body
