@@ -1,4 +1,7 @@
 schema lucene {
+
+    stemming: none
+
     document lucene {
         field language type string {
             indexing: set_language

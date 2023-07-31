@@ -1,36 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <services version="1.0">
   <container id="container" version="1.0">
-    <component id="en"
-               class="org.apache.lucene.analysis.core.SimpleAnalyzer"
-               bundle="vespa-lucene-linguistics-poc" />
-    <component id="pl"
-               class="lt.jocas.vespa.linguistics.analyzers.PolishAnalyzer"
-               bundle="vespa-lucene-linguistics-poc" />
-    <component id="lt.jocas.vespa.linguistics.LuceneLinguistics" bundle="vespa-lucene-linguistics-poc">
-      <config name="lt.jocas.vespa.linguistics.lucene-analysis">
-        <configDir>lucene</configDir>
-        <analysis>
-          <item key="en">
-            <tokenizer>
-              <name>standard</name>
-            </tokenizer>
-            <tokenFilters>
-              <item>
-                <name>stop</name>
-                <conf>
-                  <item key="words">en/stopwords.txt</item>
-                  <item key="ignoreCase">true</item>
-                </conf>
-              </item>
-              <item>
-                <name>englishMinimalStem</name>
-              </item>
-            </tokenFilters>
-          </item>
-        </analysis>
-      </config>
-    </component>
+    <components>
+      <include dir="linguistics" />
+    </components>
     <document-processing/>
     <document-api/>
     <search/>

@@ -52,6 +52,11 @@ else if there is a default analyzer
 else return the standard analyzer
 ````
 
+## A note on schema
+
+Lucene Linguistics ignores the stemming settings at both: index and query time.
+To prevent unnecessary work you should disable stemming so that even the noop stemmer is applied.
+
 ## Conclusion
 
 `LuceneLinguistics` implementation turned out to be highly flexible.

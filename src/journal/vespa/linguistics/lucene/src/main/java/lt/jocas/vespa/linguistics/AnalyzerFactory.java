@@ -83,16 +83,10 @@ public class AnalyzerFactory {
         return analyzer;
     }
 
-    // TODO: Does it mak sense to combine language + stemMode + removeAccents to make
+    // TODO: Would it make sense to combine language + stemMode + removeAccents to make
     //  a composite key so we can have more variations possible?
     private String generateKey(Language language, StemMode stemMode, boolean removeAccents) {
         return language.languageCode();
-    }
-
-    private boolean isConfiguredAndNotCreated(String analyzerKey) {
-        boolean isConfigured = null != config.analysis(analyzerKey);
-        boolean isNotCreated = null == languageAnalyzers.get(analyzerKey);
-        return (isConfigured && isNotCreated);
     }
 
     private Analyzer setUpAnalyzer(String analyzerKey) {

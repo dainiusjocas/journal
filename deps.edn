@@ -1,6 +1,6 @@
 {:paths ["src" "resources"]
- :deps  {io.github.nextjournal/clerk             {:git/sha "b7207926bacb10e6af17075efd71df3363b74d21"}
-         io.github.nextjournal/clerk-slideshow   {:git/sha "977003e581d78f4f554bb8ae73f877f4070925c3"}
+ :deps  {io.github.nextjournal/clerk             {:git/sha "fc6df7186bfea2571fff2dd790d0ad63f8d6295f"}
+         io.github.nextjournal/clerk-slideshow   {:git/sha "11a83fea564da04b9d17734f2031a4921d917893"}
          org.slf4j/slf4j-nop                     {:mvn/version "1.7.36"}
          clj-test-containers/clj-test-containers {:mvn/version "0.7.4"}
          org.jsoup/jsoup                         {:mvn/version "1.16.1"}
