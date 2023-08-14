@@ -2,7 +2,7 @@
 <services version="1.0">
   <container id="container" version="1.0">
     <components>
-      <include dir="linguistics"/>
+      <include dir="linguistics" />
     </components>
     <document-processing/>
     <document-api/>

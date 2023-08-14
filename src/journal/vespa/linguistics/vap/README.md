@@ -23,6 +23,9 @@ docker run --rm --detach \
 
 vespa status deploy --wait 300
 
+# Package the Lucene Linguistics implementation
+(cd ../lucene && mvn clean install)
+
 mvn clean package
 vespa deploy -w 100
 
@@ -65,3 +68,10 @@ The query should return:
 ```
 
 Voila!
+
+## Search behaviour is a bit unexpected!
+
+If the configured analyzer for e.g. reverses or lowercases strings, then what is actually written into posting lists are not
+the reversed strings!
+While in search the string after the tokenizer are used. 
+This creates asymmetry in text processing.
