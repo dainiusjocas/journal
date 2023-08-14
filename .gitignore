@@ -18,3 +18,4 @@ public/
 logs/
 .clj-kondo/
 out/
+**/.DS_Store

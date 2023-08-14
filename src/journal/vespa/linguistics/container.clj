@@ -3,24 +3,19 @@
 
 (def vap-dir "/opt/vespa/testcontainers")
 
-(def linguistics-dir "/opt/vespa/linguistics")
-
 (defn package! [in-container]
-  [(tc/execute-command!
-     in-container
-     ["sh" "-c" (format "(cd %s && mvn clean -DskipTests install)" linguistics-dir)])
-   (tc/execute-command!
-     in-container
-     ["sh" "-c" (format "(cd %s && mvn clean -DskipTests package)" vap-dir)])])
+  (tc/execute-command!
+    in-container
+    ["sh" "-c" (format "(cd %s && mvn clean -DskipTests package)" vap-dir)]))
 
 (defn deploy! [in-container]
   (tc/execute-command!
     in-container
-    ["sh" "-c" (format "(cd %s && vespa deploy -w 120)" vap-dir)]))
+    ["sh" "-c" (format "(cd %s && vespa deploy -w 60)" vap-dir)]))
 
 (defn build-vap-and-deploy! [in-container]
-  [(package! in-container)
-   (deploy! in-container)])
+  [(doto (package! in-container) println)
+   (doto (deploy! in-container) println)])
 
 (def vespa
   (delay
@@ -38,12 +33,11 @@
                                  :headers         {"Accept" "text/plain"}
                                  :startup-timeout 300}
                  :log-to        {:log-strategy :fn
-                                 :function     (fn [log-line] (print "VESPA>: " log-line))}})
-              (tc/bind-filesystem! {:host-path      "src/journal/vespa/linguistics/vap"
+                                 :function     (fn [log-line]
+                                                 (when (re-matches #"(?i).*lucene.*" log-line)
+                                                   (print "VESPA>: " log-line)))}})
+              (tc/bind-filesystem! {:host-path      "src/journal/vespa/linguistics/vap2"
                                     :container-path vap-dir
-                                    :mode           :read-write})
-              (tc/bind-filesystem! {:host-path      "src/journal/vespa/linguistics/lucene"
-                                    :container-path linguistics-dir
                                     :mode           :read-write})
               (tc/start!))
       (build-vap-and-deploy!))))

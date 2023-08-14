@@ -69,7 +69,7 @@
           {}
           {"query"          "somethings one two dainius"
            "grammar"        "any"
-           "model.language" "en"
+           "model.language" "fr"
            "yql"            "select * from content where ({grammar: \"all\"}userInput(@query)) timeout 100"
            "traceLevel"     "2"}
           (vap-container-port))

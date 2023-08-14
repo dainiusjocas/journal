@@ -1,0 +1,28 @@
+<components>
+  <component id="linguistics"
+             class="com.yahoo.language.lucene.LuceneLinguistics"
+             bundle="vespa-lucene-linguistics-app">
+    <config name="com.yahoo.language.lucene.lucene-analysis">
+      <configDir>linguistics</configDir>
+      <analysis>
+        <item key="en">
+          <tokenizer>
+            <name>standard</name>
+          </tokenizer>
+          <tokenFilters>
+            <item>
+              <name>stop</name>
+              <conf>
+                <item key="words">en/stopwords.txt</item>
+                <item key="ignoreCase">true</item>
+              </conf>
+            </item>
+            <item>
+              <name>englishMinimalStem</name>
+            </item>
+          </tokenFilters>
+        </item>
+      </analysis>
+    </config>
+  </component>
+</components>
