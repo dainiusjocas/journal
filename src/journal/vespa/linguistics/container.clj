@@ -36,7 +36,7 @@
                                  :function     (fn [log-line]
                                                  (when (re-matches #"(?i).*lucene.*" log-line)
                                                    (print "VESPA>: " log-line)))}})
-              (tc/bind-filesystem! {:host-path      "src/journal/vespa/linguistics/vap"
+              (tc/bind-filesystem! {:host-path      "src/journal/vespa/linguistics/vap2"
                                     :container-path vap-dir
                                     :mode           :read-write})
               (tc/start!))
