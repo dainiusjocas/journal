@@ -6,8 +6,8 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>lt.jocas</groupId>
-  <artifactId>vespa-lucene-linguistics-poc</artifactId>
-  <version>0.0.1</version>
+  <artifactId>vespa-lucene-linguistics-app</artifactId>
+  <version>0.0.2</version>
   <packaging>container-plugin</packaging>
 
   <properties>

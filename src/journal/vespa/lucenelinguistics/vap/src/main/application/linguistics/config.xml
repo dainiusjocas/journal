@@ -1,7 +1,7 @@
 <components>
   <component id="linguistics"
              class="com.yahoo.language.lucene.LuceneLinguistics"
-             bundle="vespa-lucene-linguistics-poc">
+             bundle="vespa-lucene-linguistics-app">
     <config name="com.yahoo.language.lucene.lucene-analysis">
       <configDir>linguistics</configDir>
       <analysis>
