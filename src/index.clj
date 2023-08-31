@@ -14,7 +14,8 @@ h1 + p:after { content: \"\"; position: absolute; left: 0; bottom: 0; border-bot
 ^{::clerk/viewer clerk/html :nextjournal.clerk/visibility {:result :show}}
 (into [:<>]
       (map idx/link-article)
-      ['articles/vespa-lucene-linguistics-analyzers
+      ['articles/clojurist-together-update-2
+       'articles/vespa-lucene-linguistics-analyzers
        'articles/vespa-lucene-linguistics
        'articles/vespa-searcher-properties
        'articles/vespa-ip-vs-hostname])
