@@ -1,10 +1,10 @@
 {:paths ["src" "resources"]
- :deps  {io.github.nextjournal/clerk             {:git/sha "fc6df7186bfea2571fff2dd790d0ad63f8d6295f"}
+ :deps  {io.github.nextjournal/clerk             {:git/sha "9f336d7d424d39bd6b4aa6c9fad19dccd09f9956"}
          io.github.nextjournal/clerk-slideshow   {:git/sha "11a83fea564da04b9d17734f2031a4921d917893"}
          org.slf4j/slf4j-nop                     {:mvn/version "1.7.36"}
          clj-test-containers/clj-test-containers {:mvn/version "0.7.4"}
          org.jsoup/jsoup                         {:mvn/version "1.16.1"}
-         com.cnuernber/charred                   {:mvn/version "1.028"}}
+         com.cnuernber/charred                   {:mvn/version "1.032"}}
  :aliases
  {:dev
   {:extra-paths ["dev"]}
